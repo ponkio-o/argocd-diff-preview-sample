@@ -1,0 +1,62 @@
+name: Argo CD Diff Preview
+
+on:
+  pull_request:
+
+jobs:
+  argocd-diff-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Get changed files
+        id: changed_files
+        uses: tj-actions/changed-files@c3a1bb2c992d77180ae65be6ae6c166cf40f857c # v45.0.3
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: target-branch
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+          path: base-branch
+
+      - uses: aquaproj/aqua-installer@6ce1f8848ec8e61f14d57bd5d7597057a6dd187c # v3.0.1
+        with:
+          aqua_version: v2.36.2
+          working_directory: base-branch
+
+      - name: Set AQUA_GLOBAL_CONFIG
+        working-directory: base-branch
+        run: |
+          CONFIG_PATH=$(pwd)
+          echo "AQUA_GLOBAL_CONFIG=$CONFIG_PATH/aqua.yaml" >> $GITHUB_ENV
+
+      - name: Generate Diff
+        run: |
+          argocd-diff-preview \
+            --debug \
+            --timeout 600 \
+            --repo $REPOSITORY \
+            --base-branch main \
+            --target-branch $TARGET_BRANCH \
+            --files-changed "$CHANGED_FILE" \
+            --argocd-chart-version $ARGOCD_CHART_VERSION
+        env:
+          REPOSITORY: ${{ github.repository }}
+          TARGET_BRANCH: ${{ github.head_ref }}
+          ARGOCD_CHART_VERSION: 7.6.12 # renovate: depName=argo-cd
+          CHANGED_FILE: ${{ steps.changed_files.outputs.all_changed_files }}
+
+      - name: Post diff as comment
+        run: |
+          gh pr comment ${{ github.event.number }} --repo ${{ github.repository }} --body-file output/diff.md --edit-last || \
+          gh pr comment ${{ github.event.number }} --repo ${{ github.repository }} --body-file output/diff.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

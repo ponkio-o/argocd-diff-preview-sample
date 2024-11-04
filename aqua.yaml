@@ -1,0 +1,15 @@
+---
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+# checksum:
+#   enabled: true
+#   require_checksum: true
+#   supported_envs:
+#   - all
+registries:
+  - type: standard
+    ref: v4.246.0 # renovate: depName=aquaproj/aqua-registry
+packages:
+  - name: dag-andersen/argocd-diff-preview@v0.0.22
+  - name: kubernetes/kubectl@v1.31.2
+  - name: kubernetes-sigs/kind@v0.24.0

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bar4f-development
+  namespace: argocd
+  annotations:
+    argocd-diff-preview/watch-pattern: manifests/sample-app/.*
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: manifests/sample-app
+    repoURL: https://github.com/ponkio-o/argocd-diff-preview-sample.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
