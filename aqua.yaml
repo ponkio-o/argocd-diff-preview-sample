@@ -13,3 +13,4 @@ packages:
   - name: dag-andersen/argocd-diff-preview@v0.0.22
   - name: kubernetes/kubectl@v1.31.2
   - name: kubernetes-sigs/kind@v0.24.0
+  - name: argoproj/argo-cd@v2.12.6
