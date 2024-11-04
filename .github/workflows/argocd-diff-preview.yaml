@@ -4,8 +4,28 @@ on:
   pull_request:
 
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pull-requests: read
+
+    outputs:
+      argocd-diff-preview: ${{ steps.changes.outputs.argocd-diff-preview }}
+
+    steps:
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: changes
+        with:
+          filters: |
+            argocd-diff-preview:
+              - 'argocd-applications/**'
+              - 'manifests/**'
+
   argocd-diff-preview:
     runs-on: ubuntu-latest
+    needs: filter
+    if: needs.filter.outputs.argocd-diff-preview == 'true'
     timeout-minutes: 15
     permissions:
       contents: read
