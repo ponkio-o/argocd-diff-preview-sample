@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bar4f-development
+  name: sample-app-development
   namespace: argocd
   annotations:
     argocd-diff-preview/watch-pattern: manifests/sample-app/.*
