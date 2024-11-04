@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: manifests/sample-app
+    path: manifests/sample-app/base
     repoURL: https://github.com/ponkio-o/argocd-diff-preview-sample.git
     targetRevision: main
   syncPolicy:
