@@ -58,6 +58,8 @@ jobs:
           CONFIG_PATH=$(pwd)
           echo "AQUA_GLOBAL_CONFIG=$CONFIG_PATH/aqua.yaml" >> $GITHUB_ENV
 
+      - run: argocd-diff-preview --version
+
       - name: Generate Diff
         run: |
           argocd-diff-preview \
